@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI-Security-Checker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">◈</span> AI-Security-Checker <span class="badge">SOC</span></div>
+    <div class="chips">
+      <span class="chip" id="chip-ai">AI</span>
+      <span class="chip" id="chip-db">DB</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <form id="scan-form" autocomplete="off">
+        <input id="url-input" type="text" placeholder="example.com or https://example.com/login" required />
+        <button id="scan-btn" type="submit"><span class="btn-label">Scan URL</span><span class="spinner"></span></button>
+      </form>
+      <div id="error" class="error hidden"></div>
+    </section>
+
+    <section class="top-grid">
+      <div class="card gauge-card">
+        <svg id="gauge" viewBox="0 0 400 400" role="img" aria-label="Risk gauge"></svg>
+        <div class="legend">
+          <span><i style="background:#10B981"></i>Safe 0–39</span>
+          <span><i style="background:#F59E0B"></i>Suspicious 40–69</span>
+          <span><i style="background:#EF4444"></i>Danger 70–100</span>
+        </div>
+      </div>
+
+      <div class="card" id="summary-card">
+        <h2>Analysis</h2>
+        <div id="summary" class="muted">Enter a URL and run a scan. Results from the network checks and Gemini analysis will appear here.</div>
+      </div>
+    </section>
+
+    <section class="three-grid hidden" id="details">
+      <div class="card"><h2>SSL / TLS</h2><div id="ssl"></div></div>
+      <div class="card"><h2>Security Headers</h2><div id="headers"></div></div>
+      <div class="card"><h2>Signals</h2><div id="signals"></div></div>
+    </section>
+
+    <section class="card">
+      <h2>Recent Scans</h2>
+      <div id="history" class="muted">No scans yet.</div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
