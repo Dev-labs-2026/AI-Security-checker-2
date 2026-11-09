@@ -2,6 +2,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import time
+from collections import defaultdict, deque
+from fastapi import Request
+
+RATE_LIMIT = 8      # scans allowed...
+RATE_WINDOW = 60    # ...per this many seconds, per visitor
+_hits = defaultdict(deque)
+
+
+def check_rate_limit(ip: str):
+    now = time.time()
+    q = _hits[ip]
+    while q and now - q[0] > RATE_WINDOW:
+        q.popleft()
+    if len(q) >= RATE_LIMIT:
+        raise HTTPException(status_code=429, detail="Too many scans. Please wait a minute and try again.")
+    q.append(now)
+
 import os
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
@@ -45,7 +63,8 @@ async def health():
 
 
 @app.post("/api/scan")
-async def scan(req: ScanRequest):
+async def scan(req: ScanRequest, request: Request):
+    check_rate_limit(request.client.host if request.client else "unknown")
     try:
         tech = await scan_target(req.url)
     except ValueError as e:
